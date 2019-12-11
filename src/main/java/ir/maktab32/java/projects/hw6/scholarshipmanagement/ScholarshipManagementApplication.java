@@ -1,11 +1,12 @@
 package ir.maktab32.java.projects.hw6.scholarshipmanagement;
 
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.core.share.AuthenticationService;
+import ir.maktab32.java.projects.hw6.scholarshipmanagement.core.utilities.DisplayData;
+import ir.maktab32.java.projects.hw6.scholarshipmanagement.core.utilities.Menu;
+import ir.maktab32.java.projects.hw6.scholarshipmanagement.core.utilities.MyMath;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.features.dashboard.impl.DashboardUseCaseImpl;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.features.dashboard.usecases.DashboardUseCase;
-import ir.maktab32.java.projects.hw6.scholarshipmanagement.features.logmanagement.impl.FindAllScholarshipsByApplicationUseCaseImpl;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.features.logmanagement.impl.FindScholarshipHistoryUseCaseImpl;
-import ir.maktab32.java.projects.hw6.scholarshipmanagement.features.logmanagement.usecases.FindAllScholarshipsByApplicationUseCase;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.features.logmanagement.usecases.FindScholarshipHistoryUseCase;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.features.scholarshipverification.impl.*;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.features.scholarshipverification.usecases.*;
@@ -23,20 +24,19 @@ import java.util.Scanner;
 public class ScholarshipManagementApplication {
 
     public static void main(String[] args) {
-
         Scanner scanner = new Scanner(System.in);
         String command = "";
-        while (! command.equals("exit")) {
 
+        while (! command.equals("exit")) {
             System.out.println("\u29bf What Do You Want To Do?\t(Press m to See Menu)");
             command = scanner.nextLine();
 
-            //display menu
+            //*******************************display menu*************************************
             if (command.equals("m")){
-                displayMenu();
+                Menu.disply();
             }
 
-            // Login
+            // *************************************Login*************************************
             else if (command.equals("login")) {
                 if (AuthenticationService.getInstance().getLoginUser() != null){
                     System.out.println("\t\u26a0 You Are Logged In as "
@@ -58,7 +58,7 @@ public class ScholarshipManagementApplication {
                 }
             }
 
-            //logout
+            //**************************************logout************************************
             else if (command.equals("logout")){
                 if (AuthenticationService.getInstance().getLoginUser() == null){
                     System.out.println("\t\u26a0 You Aren't Logged In!");
@@ -66,11 +66,11 @@ public class ScholarshipManagementApplication {
                 else {
                     LogoutUseCase logoutUseCase = new LogoutUseCaseImpl();
                     logoutUseCase.logout();
-                    System.out.println("\t\u2705 Logout successful!");
+                    System.out.println("\t\u2705 Logout Successful!");
                 }
             }
 
-            //request scholarship by student
+            //************************request scholarship by student***************************
             else if(command.equals("request")){
                 User loginUser = AuthenticationService.getInstance().getLoginUser();
                 if (loginUser == null || !loginUser.getRole().equals("Student")){
@@ -100,9 +100,9 @@ public class ScholarshipManagementApplication {
                     do {
                         System.out.print("\t\u29bf Last Score: ");
                         strScore = scanner.nextLine();
-                        if (!isFloat(strScore))
+                        if (!MyMath.isFloat(strScore))
                             System.out.println("\t\t\u26a0 Invalid Score!");
-                    }while (!isFloat(strScore));
+                    }while (!MyMath.isFloat(strScore));
                     Float lastScore = Float.parseFloat(strScore);
 
                     System.out.print("\t\u29bf Apply University: ");
@@ -123,8 +123,29 @@ public class ScholarshipManagementApplication {
 
             }
 
+            //**********************************find by student********************************
+            else if (command.equals("stulist")){
+                User loginUser = AuthenticationService.getInstance().getLoginUser();
+                if (loginUser == null || !loginUser.getRole().equals("Student")){
+                    System.out.println("\t\u26a0 Please Login as Student!");
+                }
+                else {
+                    FindScholarshipByStudentUseCase findScholarshipByStudentUseCase
+                            = new FindScholarshipByStudentUseCaseImpl();
 
-            // find or accept or rejrct by supervisor
+                    List<Scholarship> scholarships = findScholarshipByStudentUseCase
+                            .listScholarships();
+
+                    if (scholarships.size() == 0)
+                        System.out.println("\t\u26a0 Student's List is Empty!");
+                    else {
+                        DisplayData.printScholarshipList(scholarships, "Student");
+                    }
+                }
+            }
+
+
+            // *********************find or accept or reject by supervisor*********************
             else if (command.equals("svlist") || command.equals("svaccept") || command.equals("svreject")){
                 User loginUser = AuthenticationService.getInstance().getLoginUser();
                 if (loginUser == null || !loginUser.getRole().equals("Supervisor")){
@@ -138,19 +159,18 @@ public class ScholarshipManagementApplication {
                             .listScholarships();
 
                     if (command.equals("svlist")) {
-                        System.out.println("+-----------------------+\n|   Supervisor's List   |\n+-----------------------+");
                         if (scholarships.size() == 0)
-                            System.out.println("Supervisor's List is Empty!");
-                        for (int i = 0; i < scholarships.size(); i++) {
-                            System.out.println(scholarships.get(i));
+                            System.out.println("\t\u26a0 Supervisor's List is Empty!");
+                        else {
+                            DisplayData.printScholarshipList(scholarships, "Supervisor");
                         }
                     }
                     else {
-                        System.out.println("Scholarship Id: ");
+                        System.out.print("\t\u29bf Scholarship Id: ");
                         String scholarshipId = scanner.nextLine();
 
-                        if (!isLong(scholarshipId)) {
-                            System.out.println("\t\u26a0 Invalid Scholarship Id!");
+                        if (!MyMath.isLong(scholarshipId)) {
+                            System.out.println("\t\t\u26a0 Invalid Scholarship Id!");
                         }
                         else {
                             Scholarship selectedScholarship = null;
@@ -160,20 +180,20 @@ public class ScholarshipManagementApplication {
                                 }
                             }
                             if (selectedScholarship == null){
-                                System.out.println("\t\u26a0 Entered Scholarship Doesn't Exist in Supervisor's List!");
+                                System.out.println("\t\t\u26a0 Entered Scholarship Doesn't Exist in Supervisor List!");
                             }
                             else {
                                 if (command.equals("svaccept")){
                                     AcceptScholarshipBySupervisorUseCase acceptScholarshipBySupervisorUseCase
                                             = new AcceptScholarshipBySupervisorUseCaseImpl();
                                     acceptScholarshipBySupervisorUseCase.accept(Long.parseLong(scholarshipId));
-                                    System.out.println("\t\u2705 Accepted by Supervisor Successfully!");
+                                    System.out.println("\t\t\u2705 Accepted by Supervisor Successfully!");
                                 }
                                 else {
                                     RejectScholarshipBySupervisorUseCase rejectScholarshipBySupervisorUseCase
                                             = new RejectScholarshipBySupervisorUseCaseImpl();
                                     rejectScholarshipBySupervisorUseCase.reject(Long.parseLong(scholarshipId));
-                                    System.out.println("\t\u2705 Rejected by Supervisor Successfully!");
+                                    System.out.println("\t\t\u2705 Rejected by Supervisor Successfully!");
                                 }
 
                             }
@@ -182,198 +202,114 @@ public class ScholarshipManagementApplication {
                 }
             }
 
-            // find scholarship by supervisor
-//            else if (command.equals("svlist")) {
-//                User loginUser = AuthenticationService.getInstance().getLoginUser();
-//                if (loginUser == null || !loginUser.getRole().equals("Supervisor")){
-//                    System.out.println("\t\u26a0 Please Login as Supervisor!");
-//                }
-//                else {
-//                    FindScholarshipBySupervisorUseCase findScholarshipBySupervisorUseCase
-//                            = new FindScholarshipBySupervisorUseCaseImpl();
-//
-//                    List<Scholarship> scholarships = findScholarshipBySupervisorUseCase
-//                            .listScholarships();
-//                    System.out.println("+-----------------------+\n|   Supervisor's List   |\n+-----------------------+");
-//                    if (scholarships.size() == 0)
-//                        System.out.println("Supervisor's List is Empty!");
-//                    for (int i = 0; i < scholarships.size(); i++) {
-//                        System.out.println(scholarships.get(i));
-//                    }
-//                }
-//            }
-
-
-
-            // accept by supervisor
-//            else if (command.equals("svaccept")) {
-//                User loginUser = AuthenticationService.getInstance().getLoginUser();
-//                if (loginUser == null || !loginUser.getRole().equals("Supervisor")) {
-//                    System.out.println("\t\u26a0 Please Login as Supervisor!");
-//                }
-//                else {
-//                    AcceptScholarshipBySupervisorUseCase acceptScholarshipBySupervisorUseCase
-//                            = new AcceptScholarshipBySupervisorUseCaseImpl();
-//
-//                    FindScholarshipBySupervisorUseCase findScholarshipBySupervisorUseCase
-//                            = new FindScholarshipBySupervisorUseCaseImpl();
-//                    List<Scholarship> scholarships = findScholarshipBySupervisorUseCase.listScholarships();
-//
-//                    System.out.println("Scholarship Id: ");
-//                    String scholarshipId = scanner.nextLine();
-//
-//                    if (!isLong(scholarshipId)) {
-//                        System.out.println("\t\u26a0 Invalid Scholarship Id!");
-//                    }
-//                    else {
-//                        Scholarship selectedScholarship = null;
-//                        for (Scholarship i : scholarships) {
-//                            if (i.getId() == Long.parseLong(scholarshipId)){
-//                                selectedScholarship = i;
-//                            }
-//                        }
-//                        if (selectedScholarship == null){
-//                            System.out.println("\t\u26a0 Entered Scholarship Doesn't Exist in Supervisor's List!");
-//                        }
-//                        else {
-//                            acceptScholarshipBySupervisorUseCase.accept(Long.parseLong(scholarshipId));
-//                            System.out.println("\t\u2705 Accepted by Supervisor Successfully!");
-//                        }
-//                    }
-//
-//
-//                }
-//            }
-
-            //reject by supervisor
-//            else if (command.equals("svreject")){
-//
-//                User loginUser = AuthenticationService.getInstance().getLoginUser();
-//                if (loginUser == null || !loginUser.getRole().equals("Supervisor")) {
-//                    System.out.println("\t\u26a0 Please Login as Supervisor!");
-//                }
-//                else {
-//                    RejectScholarshipBySupervisorUseCase rejectScholarshipBySupervisorUseCase
-//                            = new RejectScholarshipBySupervisorUseCaseImpl();
-//                    System.out.println("Scholarship Id: ");
-//                    String scholarshipId = scanner.nextLine();
-//                    rejectScholarshipBySupervisorUseCase.reject(Long.parseLong(scholarshipId));
-//                    System.out.println("Done.");
-//                }
-//            }
-
-            // find scholarship by manager
-            else if (command.equals("mnglist")){
-                FindScholarshipByManagerUseCase findScholarshipByManagerUseCase
-                        = new FindScholarshipByManagerUseCaseImpl();
-                List<Scholarship> scholarships = findScholarshipByManagerUseCase.listScholarships();
-                if (scholarships.size() == 0){
-                    System.out.println("Manager's List is Empty!");
+            // ************************find or accept or reject by manager*********************
+            else if (command.equals("mnglist") || command.equals("mngaccept") || command.equals("mngreject")){
+                User loginUser = AuthenticationService.getInstance().getLoginUser();
+                if (loginUser == null || !loginUser.getRole().equals("Manager")){
+                    System.out.println("\t\u26a0 Please Login as Manager!");
                 }
-                for (int i = 0; i < scholarships.size(); i++){
-                    System.out.println(scholarships.get(i));
+                else {
+                    FindScholarshipByManagerUseCase findScholarshipByManagerUseCase
+                            = new FindScholarshipByManagerUseCaseImpl();
+
+                    List<Scholarship> scholarships = findScholarshipByManagerUseCase
+                            .listScholarships();
+
+                    if (command.equals("mnglist")) {
+                        if (scholarships.size() == 0)
+                            System.out.println("\t\u26a0 Manager's List is Empty!");
+                        else
+                            DisplayData.printScholarshipList(scholarships, "Manager");
+                    }
+                    else {
+                        System.out.print("\t\u29bf Scholarship Id: ");
+                        String scholarshipId = scanner.nextLine();
+
+                        if (!MyMath.isLong(scholarshipId)) {
+                            System.out.println("\t\t\u26a0 Invalid Scholarship Id!");
+                        }
+                        else {
+                            Scholarship selectedScholarship = null;
+                            for (Scholarship i : scholarships) {
+                                if (i.getId() == Long.parseLong(scholarshipId)){
+                                    selectedScholarship = i;
+                                }
+                            }
+                            if (selectedScholarship == null){
+                                System.out.println("\t\t\u26a0 Entered Scholarship Doesn't Exist in Manager List!");
+                            }
+                            else {
+                                if (command.equals("mngaccept")){
+                                    AcceptScholarshipByManagerUseCase acceptScholarshipByManagerUseCase
+                                            = new AcceptScholarshipByManagerUseCaseImpl();
+                                    acceptScholarshipByManagerUseCase.accept(Long.parseLong(scholarshipId));
+                                    System.out.println("\t\t\u2705 Accepted by Manager Successfully!");
+                                }
+                                else {
+                                    RejectScholarshipByManagerUseCase rejectScholarshipByManagerUseCase
+                                            = new RejectScholarshipByManagerUseCaseImpl();
+                                    rejectScholarshipByManagerUseCase.reject(Long.parseLong(scholarshipId));
+                                    System.out.println("\t\t\u2705 Rejected by Manager Successfully!");
+                                }
+
+                            }
+                        }
+                    }
                 }
             }
 
-            //accept by manager
-            else  if (command.equals("mngaccept")){
-                AcceptScholarshipByManagerUseCase acceptScholarshipByManagerUseCase
-                        = new AcceptScholarshipByManagerUseCaseImpl();
-                System.out.print("Scholarship Id: ");
-                String scholarshipId = scanner.next();
-                acceptScholarshipByManagerUseCase.accept(Long.parseLong(scholarshipId));
-                System.out.println("Done.");
-            }
 
-            //reject by manager
-            else if (command.equals("mngreject")){
-                RejectScholarshipByManagerUseCase rejectScholarshipByManagerUseCase
-                        = new RejectScholarshipByManagerUseCaseImpl();
-                System.out.print("Scholarship Id: ");
-                String scholarshipId = scanner.next();
-                rejectScholarshipByManagerUseCase.reject(Long.parseLong(scholarshipId));
-                System.out.println("Done.");
-            }
-
-            //find by university
+            //*****************************find by university***********************************
             else if (command.equals("unilist")){
-                FindScholarshipByUniversityUseCase findScholarshipByUniversityUseCase
-                        = new FindScholarshipByUniversityUseCaseImpl();
-                List<Scholarship> scholarships = findScholarshipByUniversityUseCase.listScholarships();
-                if (scholarships.size() == 0){
-                    System.out.println("University List is Empty!");
+                User loginUser = AuthenticationService.getInstance().getLoginUser();
+                if (loginUser == null || !loginUser.getRole().equals("University")) {
+                    System.out.println("\t\u26a0 Please Login as University!");
                 }
-                for (int i =0; i < scholarships.size(); i++){
-                    System.out.println(scholarships.get(i));
+                else {
+                    FindScholarshipByUniversityUseCase findScholarshipByUniversityUseCase
+                            = new FindScholarshipByUniversityUseCaseImpl();
+                    List<Scholarship> scholarships = findScholarshipByUniversityUseCase.listScholarships();
+                    if (scholarships.size() == 0)
+                        System.out.println("\t\u26a0 University List is Empty!");
+                    else
+                        DisplayData.printScholarshipList(scholarships, "University");
                 }
             }
 
-            //display dashboard
+            //**********************************display dashboard*******************************
             else if (command.equals("dashboard")){
                 DashboardUseCase dashboardUseCase = new DashboardUseCaseImpl();
                 dashboardUseCase.display();
             }
 
-            //display given scholarship's logs
+            //***************************display given scholarship's logs************************
             else if (command.equals("history")){
-                System.out.print("Scholarship Id: ");
-                Long scholarshipId = scanner.nextLong();
-                FindScholarshipHistoryUseCase findScholarshipHistoryUseCase
-                        = new FindScholarshipHistoryUseCaseImpl();
-                List<ScholarshipLog> logs = findScholarshipHistoryUseCase.listLogs(scholarshipId);
+                System.out.print("\t\u29bf Scholarship Id: ");
+                String scholarshipId = scanner.nextLine();
 
-                for (ScholarshipLog scholarshipLog : logs){
-                    System.out.println(scholarshipLog);
+                if (!MyMath.isLong(scholarshipId)) {
+                    System.out.println("\t\t\u26a0 Invalid Scholarship Id!");
+                }
+                else {
+                    FindScholarshipHistoryUseCase findScholarshipHistoryUseCase
+                            = new FindScholarshipHistoryUseCaseImpl();
+                    List<ScholarshipLog> logs = findScholarshipHistoryUseCase.listLogs(Long.parseLong(scholarshipId));
+                    if (logs.size() == 0)
+                        System.out.println("\t\t\u26a0 No Logs Found! Make Sure that Entered Scholarship Id is Valid!");
+                    else
+                        DisplayData.printLogsList(logs, Long.parseLong(scholarshipId));
                 }
             }
 
-            else if (command.equals("exit"));
-            else {
-                System.out.println("Invalid Command!");
+            else if (command.equals("exit")){
+                System.out.println("\t\u2705 Have a Nice Day!");
             }
-
+            else {
+                System.out.println("\t\u26a0 Invalid Command!");
+            }
             System.out.println();
         }
     }
 
-    public static void displayMenu(){
-
-        System.out.println("\t+------------------------------------------------------+");
-        System.out.println("\t|                         Menu                         |");
-        System.out.println("\t+------------------------------------------------------+");
-        System.out.println("\t| login     -->  Login.                                |");
-        System.out.println("\t| request   -->  Request Scholarship as Student.       |");
-        System.out.println("\t| svlist    -->  Displays Supervisor's List.           |");
-        System.out.println("\t| svaccept  -->  Supervisor Accepts Given Scholarship. |");
-        System.out.println("\t| svreject  -->  Supervisor Rejects Given Scholarship. |");
-        System.out.println("\t| mnglist   -->  Displays Manager's List.              |");
-        System.out.println("\t| mngaccept -->  Manager Accepts Given Scholarship.    |");
-        System.out.println("\t| mngreject -->  Manager Rejects Given Scholarship.    |");
-        System.out.println("\t| unilist   -->  Displays University's List.           |");
-        System.out.println("\t| dashboard -->  Displays Dashboard                    |");
-        System.out.println("\t| history   -->  Displays Logs for Given Scholarship.  |");
-        System.out.println("\t| exit      -->  Exit.                                 |");
-        System.out.println("\t+------------------------------------------------------+");
-
-    }
-
-
-    public static boolean isFloat(String string){
-        try {
-            Float.parseFloat(string);
-            return true;
-        }catch (Exception ex){
-            return false;
-        }
-    }
-
-    public static boolean isLong(String string){
-        try {
-            Long.parseLong(string);
-            return true;
-        }catch (Exception ex){
-            return false;
-        }
-    }
 
 }

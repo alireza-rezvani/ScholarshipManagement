@@ -146,20 +146,10 @@ public class Scholarship {
 
     @Override
     public String toString() {
-        return "Scholarship{" +
-                "id=" + id +
-                ", status='" + status + '\'' +
-                ", name='" + name + '\'' +
-                ", family='" + family + '\'' +
-                ", nationalCode='" + nationalCode + '\'' +
-                ", lastUni='" + lastUni + '\'' +
-                ", lastDegree='" + lastDegree + '\'' +
-                ", lastField='" + lastField + '\'' +
-                ", lastScore=" + lastScore +
-                ", applyUni='" + applyUni + '\'' +
-                ", applyDegree='" + applyDegree + '\'' +
-                ", applyField='" + applyField + '\'' +
-                ", applyDate='" + applyDate + '\'' +
-                '}';
+
+        return String.format("%-3d %-22s %-10s %-10s  %-12s  %-15s %-10s %-20s  %-9.2f  %-15s  %-11s  %-20s %-10s"
+        , id, status, name, family, nationalCode, lastUni, lastDegree, lastField, lastScore
+        ,applyUni, applyDegree, applyField, applyDate);
+
     }
 }
