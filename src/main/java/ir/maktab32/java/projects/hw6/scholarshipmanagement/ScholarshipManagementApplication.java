@@ -6,6 +6,7 @@ import ir.maktab32.java.projects.hw6.scholarshipmanagement.core.utilities.Menu;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.core.utilities.MyMath;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.features.dashboard.impl.DashboardUseCaseImpl;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.features.dashboard.usecases.DashboardUseCase;
+import ir.maktab32.java.projects.hw6.scholarshipmanagement.features.logmanagement.impl.FindAllScholarshipsByApplicationUseCaseImpl;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.features.logmanagement.impl.FindScholarshipHistoryUseCaseImpl;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.features.logmanagement.usecases.FindScholarshipHistoryUseCase;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.features.scholarshipverification.impl.*;
@@ -18,6 +19,7 @@ import ir.maktab32.java.projects.hw6.scholarshipmanagement.model.Scholarship;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.model.ScholarshipLog;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.model.User;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -282,7 +284,7 @@ public class ScholarshipManagementApplication {
             else if (command.equals("dashboard")){
                 User user = AuthenticationService.getInstance().getLoginUser();
                 if (user == null)
-                    System.out.println("\t\u26a0 Please Login!");
+                    System.out.println("\t\u26a0 Login Please!");
                 else {
                     DashboardUseCase dashboardUseCase = new DashboardUseCaseImpl();
                     dashboardUseCase.display();
@@ -293,7 +295,7 @@ public class ScholarshipManagementApplication {
             else if (command.equals("history")){
                 User user = AuthenticationService.getInstance().getLoginUser();
                 if (user == null)
-                    System.out.println("\t\u26a0 Please Login!");
+                    System.out.println("\t\u26a0 Login Please!");
                 else {
                     System.out.print("\t\u29bf Scholarship Id: ");
                     String scholarshipId = scanner.nextLine();
@@ -307,8 +309,26 @@ public class ScholarshipManagementApplication {
                         List<ScholarshipLog> logs = findScholarshipHistoryUseCase.listLogs(Long.parseLong(scholarshipId));
                         if (logs.size() == 0)
                             System.out.println("\t\t\u26a0 No Logs Found! Make Sure that Entered Scholarship Id is Valid!");
-                        else
+                        else if (user.getRole().equals("Student")){
+                            List<Scholarship> currentStudentScholarships = new FindScholarshipByStudentUseCaseImpl().listScholarships();
+                            boolean hasAccess = false;
+                            for (Scholarship i : currentStudentScholarships){
+                                if (i.getId() == Long.parseLong(scholarshipId))
+                                    hasAccess = true;
+                            }
+                            if (hasAccess == false)
+                                System.out.println("\t\t\u26a0 You Don't Have Access to This Scholarship!");
+                            else {
+                                DisplayData.printScholarship(Long.parseLong(scholarshipId));
+                                System.out.println();
+                                DisplayData.printLogsList(logs, Long.parseLong(scholarshipId));
+                            }
+                        }
+                        else {
+                            DisplayData.printScholarship(Long.parseLong(scholarshipId));
+                            System.out.println();
                             DisplayData.printLogsList(logs, Long.parseLong(scholarshipId));
+                        }
                     }
                 }
             }

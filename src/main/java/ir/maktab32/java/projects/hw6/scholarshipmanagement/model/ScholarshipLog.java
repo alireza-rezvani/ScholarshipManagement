@@ -27,8 +27,8 @@ public class ScholarshipLog {
     @Override
     public String toString() {
 
-        return String.format("%-6d\t%-13d\t%-22s\t%-6d\t%-12s\t%12s"
-        ,id, scholarshipId, action, userId, userRole, date);
+        return String.format("%-5d\t%-22s\t%-6d\t%-12s\t%12s"
+        , scholarshipId, action, userId, userRole, date);
 
     }
 }
