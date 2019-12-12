@@ -11,6 +11,7 @@ import ir.maktab32.java.projects.hw6.scholarshipmanagement.model.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class RequestScholarshipByStudentUseCaseImpl implements RequestScholarshi
                         "scholarship(status, name, family, nationalCode, lastUni, lastDegree, lastField" +
                         ", lastScore, applyUni, applyDegree, applyField, applyDate, requesterId) " +
                         "values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                PreparedStatement preparedStatement = connection.prepareStatement(sql);
+                PreparedStatement preparedStatement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
                 preparedStatement.setString(1, "RequestedByStudent");
                 preparedStatement.setString(2, scholarship.getName());
                 preparedStatement.setString(3, scholarship.getFamily());
@@ -41,9 +42,14 @@ public class RequestScholarshipByStudentUseCaseImpl implements RequestScholarshi
                 preparedStatement.setLong(13, scholarship.getRequesterId());
                 preparedStatement.execute();
 
-                List<Scholarship> allScholarships = new FindAllScholarshipsByApplicationUseCaseImpl().listAllScholarships();
-                Long scholarshipId = allScholarships.get(allScholarships.size()-1).getId();
-                new SaveLogByApplicationUseCaseImpl().save(scholarshipId, "RequestedByStudent");
+                ResultSet resultSet = preparedStatement.getGeneratedKeys();
+                Long createdScholarshipId = null;
+                if (resultSet.next())
+                    createdScholarshipId = resultSet.getLong(1);
+
+                System.out.println("\t\t\u2705 Your Scholarlship Id:" + createdScholarshipId);
+
+                new SaveLogByApplicationUseCaseImpl().save(createdScholarshipId, "RequestedByStudent");
 
             } catch (SQLException e) {
                 e.printStackTrace();
