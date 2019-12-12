@@ -280,8 +280,13 @@ public class ScholarshipManagementApplication {
 
             //**********************************display dashboard*******************************
             else if (command.equals("dashboard")){
-                DashboardUseCase dashboardUseCase = new DashboardUseCaseImpl();
-                dashboardUseCase.display();
+                User user = AuthenticationService.getInstance().getLoginUser();
+                if (user == null)
+                    System.out.println("\t\u26a0 Please Login!");
+                else {
+                    DashboardUseCase dashboardUseCase = new DashboardUseCaseImpl();
+                    dashboardUseCase.display();
+                }
             }
 
             //***************************display given scholarship's logs************************
