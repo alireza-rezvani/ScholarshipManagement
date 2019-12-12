@@ -45,7 +45,7 @@ public class RequestScholarshipByStudentUseCaseImpl implements RequestScholarshi
                 if (resultSet.next())
                     createdScholarshipId = resultSet.getLong(1);
 
-                System.out.println("\t\t\u2705 Your Scholarship Id:" + createdScholarshipId);
+                System.out.println("\t\t\u2705 Your Scholarship Id: " + createdScholarshipId);
 
                 new SaveLogByApplicationUseCaseImpl().save(createdScholarshipId, "RequestedByStudent");
 

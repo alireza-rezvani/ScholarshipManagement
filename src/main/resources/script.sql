@@ -13,7 +13,8 @@ create table scholarship
     applyUni     varchar(24) not null,
     applyDegree  varchar(24) not null,
     applyField   varchar(24) not null,
-    applyDate    varchar(24) not null
+    applyDate    varchar(24) not null,
+    requesterId  int         not null
 );
 
 create table scholarshiplog
