@@ -22,8 +22,9 @@ public class FindScholarshipByStudentUseCaseImpl implements FindScholarshipByStu
         if (user != null && user.getRole().equals("Student")){
             try {
                 Connection connection = DatabaseConfig.getDatabaseConnection();
-                String sql = "select * from scholarship where status = 'RejectedBySupervisor'";
+                String sql = "select * from scholarship where requesterId = ?";
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setLong(1, user.getId());
                 ResultSet resultSet = preparedStatement.executeQuery();
                 while (resultSet.next()){
                     Scholarship scholarship = new Scholarship(
