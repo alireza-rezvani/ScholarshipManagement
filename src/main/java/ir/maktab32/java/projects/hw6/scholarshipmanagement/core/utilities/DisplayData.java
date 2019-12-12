@@ -1,6 +1,6 @@
 package ir.maktab32.java.projects.hw6.scholarshipmanagement.core.utilities;
 
-import ir.maktab32.java.projects.hw6.scholarshipmanagement.features.logmanagement.impl.FindAllScholarshipsByApplicationUseCaseImpl;
+import ir.maktab32.java.projects.hw6.scholarshipmanagement.features.scholarshipverification.impl.FindAllScholarshipsByApplicationUseCaseImpl;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.model.Scholarship;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.model.ScholarshipLog;
 

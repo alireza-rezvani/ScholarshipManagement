@@ -6,20 +6,21 @@ import ir.maktab32.java.projects.hw6.scholarshipmanagement.core.utilities.Menu;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.core.utilities.MyMath;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.features.dashboard.impl.DashboardUseCaseImpl;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.features.dashboard.usecases.DashboardUseCase;
-import ir.maktab32.java.projects.hw6.scholarshipmanagement.features.logmanagement.impl.FindAllScholarshipsByApplicationUseCaseImpl;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.features.logmanagement.impl.FindScholarshipHistoryUseCaseImpl;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.features.logmanagement.usecases.FindScholarshipHistoryUseCase;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.features.scholarshipverification.impl.*;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.features.scholarshipverification.usecases.*;
+import ir.maktab32.java.projects.hw6.scholarshipmanagement.features.usermanagement.impl.FindAllUsersUseCaseImpl;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.features.usermanagement.impl.LoginUseCaseImpl;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.features.usermanagement.impl.LogoutUseCaseImpl;
+import ir.maktab32.java.projects.hw6.scholarshipmanagement.features.usermanagement.impl.RegisterUseCaseImpl;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.features.usermanagement.usecases.LoginUseCase;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.features.usermanagement.usecases.LogoutUseCase;
+import ir.maktab32.java.projects.hw6.scholarshipmanagement.features.usermanagement.usecases.RegisterUseCase;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.model.Scholarship;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.model.ScholarshipLog;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.model.User;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -29,13 +30,50 @@ public class ScholarshipManagementApplication {
         Scanner scanner = new Scanner(System.in);
         String command = "";
 
+
         while (! command.equals("exit")) {
-            System.out.println("\u29bf What Do You Want To Do?\t(Press m to See Menu)");
+            System.out.println("\n\u29bf What Do You Want To Do?\t(Press m to See Menu)");
             command = scanner.nextLine();
 
-            //*******************************display menu*************************************
-            if (command.equals("m")){
-                Menu.disply();
+            // ************************************menu***************************************
+            if (command.equals("m"))
+                Menu.display();
+
+            // ************************************register***********************************
+
+            else if (command.equals("register")){
+                if (AuthenticationService.getInstance().getLoginUser() != null){
+                    System.out.println("\t\u26a0 You Are Logged In as "
+                            + AuthenticationService.getInstance().getLoginUser().getUsername()
+                            + "! Please Logout First!");
+                }
+                else {
+                    List<User> users = new FindAllUsersUseCaseImpl().getUsersList();
+                    String username = null;
+                     do {
+                        System.out.print("\t\u29bf Username : ");
+                        username = scanner.nextLine();
+                        for (User i : users){
+                            if (i.getUsername().equals(username))
+                                username = null;
+                        }
+                        if (username == null)
+                            System.out.println("\t\t\u2705 This Username Already Exists! Choose Another Username!");
+                    }while (username == null);
+                    System.out.print("\t\u29bf Password: ");
+                    String password = scanner.nextLine();
+                    RegisterUseCase registerUseCase = new RegisterUseCaseImpl();
+                    User user = registerUseCase.register(new User(null, username, password, "Student"));
+                    if (user != null) {
+                        System.out.println("\t\t\u2705 Register Successful by " + user.getUsername() + " as " + user.getRole() + "!");
+                        System.out.println("\t\t\u2705 Your User Id: " + user.getId());
+                        AuthenticationService.getInstance().setLoginUser(user);
+                        System.out.println("\t\t\u2705 Login Successful by " + user.getUsername() + " as " + user.getRole() + "!");
+                    } else {
+                        System.out.println("\t\t\u26a0 Register Failed!");
+                    }
+                }
+
             }
 
             // *************************************Login*************************************
@@ -53,7 +91,7 @@ public class ScholarshipManagementApplication {
                     LoginUseCase loginUseCase = new LoginUseCaseImpl();
                     User user = loginUseCase.login(username, password);
                     if (user != null) {
-                        System.out.println("\t\t\u2705 Login Successful by " + user.getRole() + "!");
+                        System.out.println("\t\t\u2705 Login Successful by " + user.getUsername() + " as " + user.getRole() + "!");
                     } else {
                         System.out.println("\t\t\u26a0 Login Failed! Invalid Username or Password!");
                     }
@@ -258,6 +296,25 @@ public class ScholarshipManagementApplication {
 
                             }
                         }
+                    }
+                }
+            }
+
+            //*************************display all scholarships only for manager****************
+            else if (command.equals("all")){
+                User loginUser = AuthenticationService.getInstance().getLoginUser();
+                if (loginUser == null || !loginUser.getRole().equals("Manager")){
+                    System.out.println("\t\u26a0 Please Login as Manager!");
+                }
+                else {
+                    FindAllScholarshipsByApplicationUseCase findAllScholarshipsByApplicationUseCase
+                            =new  FindAllScholarshipsByApplicationUseCaseImpl();
+                    List<Scholarship> scholarships = findAllScholarshipsByApplicationUseCase.listAllScholarships();
+                    if (scholarships.size() == 0){
+                        System.out.println("\t\u26a0 Scholarship List is Empty!");
+                    }
+                    else {
+                        DisplayData.printScholarshipList(scholarships, "Scholarship");
                     }
                 }
             }

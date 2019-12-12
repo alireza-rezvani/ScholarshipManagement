@@ -3,7 +3,6 @@ package ir.maktab32.java.projects.hw6.scholarshipmanagement.features.scholarship
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.core.annotations.Service;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.core.config.DatabaseConfig;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.core.share.AuthenticationService;
-import ir.maktab32.java.projects.hw6.scholarshipmanagement.features.logmanagement.impl.FindAllScholarshipsByApplicationUseCaseImpl;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.features.logmanagement.impl.SaveLogByApplicationUseCaseImpl;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.features.scholarshipverification.usecases.RequestScholarshipByStudentUseCase;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.model.Scholarship;
@@ -13,7 +12,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 
 @Service
 public class RequestScholarshipByStudentUseCaseImpl implements RequestScholarshipByStudentUseCase {

@@ -1,8 +1,8 @@
-package ir.maktab32.java.projects.hw6.scholarshipmanagement.features.logmanagement.impl;
+package ir.maktab32.java.projects.hw6.scholarshipmanagement.features.scholarshipverification.impl;
 
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.core.annotations.Service;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.core.config.DatabaseConfig;
-import ir.maktab32.java.projects.hw6.scholarshipmanagement.features.logmanagement.usecases.FindAllScholarshipsByApplicationUseCase;
+import ir.maktab32.java.projects.hw6.scholarshipmanagement.features.scholarshipverification.usecases.FindAllScholarshipsByApplicationUseCase;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.model.Scholarship;
 
 import java.sql.Connection;
