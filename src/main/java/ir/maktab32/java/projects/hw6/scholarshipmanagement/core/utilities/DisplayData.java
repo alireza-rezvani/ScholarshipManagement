@@ -12,19 +12,19 @@ public class DisplayData {
         System.out.println("=======================================================" +
                 "=======================================================" +
                 "=======================================================" +
-                "====================");
+                "=================================");
         System.out.println("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t"+role+"'s List");
         System.out.println("=======================================================" +
                 "=======================================================" +
                 "=======================================================" +
-                "====================");
-        System.out.printf("%-3s %-22s %-10s %-10s  %-12s  %-15s %-10s %-20s  %-9s  %-15s  %-11s  %-20s %-10s\n"
+                "=================================");
+        System.out.printf("%-3s %-22s %-10s %-10s  %-12s  %-15s %-10s %-20s  %-9s  %-15s  %-11s  %-20s %-10s %-11s\n"
                 , "Id", "Status", "Name", "Family", "NationalCode", "LastUniversity", "LastDegree", "LastField",
-                "LastScore", "ApplyUniversity", "ApplyDegree", "ApplyField", "ApplyDate");
+                "LastScore", "ApplyUniversity", "ApplyDegree", "ApplyField", "ApplyDate", "RequesterId");
         System.out.println("-------------------------------------------------------" +
                 "-------------------------------------------------------" +
                 "-------------------------------------------------------" +
-                "--------------------");
+                "---------------------------------");
 
         for (int i = 0; i < scholarshipList.size(); i++) {
             System.out.println(scholarshipList.get(i));
@@ -33,7 +33,7 @@ public class DisplayData {
         System.out.println("-------------------------------------------------------" +
                 "-------------------------------------------------------" +
                 "-------------------------------------------------------" +
-                "--------------------");
+                "---------------------------------");
     }
 
     public static void printLogsList(List<ScholarshipLog> scholarshipLogList, Long scholarshipId){

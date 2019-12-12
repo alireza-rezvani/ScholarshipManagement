@@ -1,7 +1,8 @@
 package ir.maktab32.java.projects.hw6.scholarshipmanagement.model;
 
+import ir.maktab32.java.projects.hw6.scholarshipmanagement.core.annotations.Entity;
 import ir.maktab32.java.projects.hw6.scholarshipmanagement.core.annotations.Id;
-
+@Entity
 public class ScholarshipLog {
 
     @Id

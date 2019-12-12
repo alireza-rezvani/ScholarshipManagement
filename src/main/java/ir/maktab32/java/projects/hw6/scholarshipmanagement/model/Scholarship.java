@@ -24,7 +24,12 @@ public class Scholarship {
     private String applyField;
     private String applyDate;
 
-    public Scholarship(Long id, String status, String name, String family, String nationalCode, String lastUni, String lastDegree, String lastField, Float lastScore, String applyUni, String applyDegree, String applyField, String applyDate) {
+    @Id
+    private Long requesterId;
+
+
+
+    public Scholarship(Long id, String status, String name, String family, String nationalCode, String lastUni, String lastDegree, String lastField, Float lastScore, String applyUni, String applyDegree, String applyField, String applyDate, Long requesterId) {
         this.id = id;
         this.status = status;
         this.name = name;
@@ -38,6 +43,7 @@ public class Scholarship {
         this.applyDegree = applyDegree;
         this.applyField = applyField;
         this.applyDate = applyDate;
+        this.requesterId = requesterId;
     }
 
     public Long getId() {
@@ -144,12 +150,20 @@ public class Scholarship {
         this.applyDate = applyDate;
     }
 
+    public Long getRequesterId() {
+        return requesterId;
+    }
+
+    public void setRequesterId(Long requesterId) {
+        this.requesterId = requesterId;
+    }
+
     @Override
     public String toString() {
 
-        return String.format("%-3d %-22s %-10s %-10s  %-12s  %-15s %-10s %-20s  %-9.2f  %-15s  %-11s  %-20s %-10s"
+        return String.format("%-3d %-22s %-10s %-10s  %-12s  %-15s %-10s %-20s  %-9.2f  %-15s  %-11s  %-20s %-10s %-11d"
         , id, status, name, family, nationalCode, lastUni, lastDegree, lastField, lastScore
-        ,applyUni, applyDegree, applyField, applyDate);
+        ,applyUni, applyDegree, applyField, applyDate, requesterId);
 
     }
 }

@@ -39,7 +39,8 @@ public class FindScholarshipByManagerUseCaseImpl implements FindScholarshipByMan
                             resultSet.getString("applyUni"),
                             resultSet.getString("applyDegree"),
                             resultSet.getString("applyField"),
-                            resultSet.getString("applyField")
+                            resultSet.getString("applyField"),
+                            resultSet.getLong("requesterId")
                     );
 
                     result.add(scholarship);

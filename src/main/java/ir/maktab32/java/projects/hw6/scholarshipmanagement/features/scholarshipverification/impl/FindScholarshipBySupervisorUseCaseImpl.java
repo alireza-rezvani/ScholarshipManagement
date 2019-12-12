@@ -45,7 +45,8 @@ public class FindScholarshipBySupervisorUseCaseImpl implements FindScholarshipBy
                                 resultSet.getString("applyUni"),
                                 resultSet.getString("applyDegree"),
                                 resultSet.getString("applyField"),
-                                resultSet.getString("applyDate")
+                                resultSet.getString("applyDate"),
+                                resultSet.getLong("requesterId")
                         );
                         result.add(scholarship);
                     }

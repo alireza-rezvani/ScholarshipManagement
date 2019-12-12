@@ -114,8 +114,10 @@ public class ScholarshipManagementApplication {
                     System.out.print("\t\u29bf Apply Date: ");
                     String applyDate = scanner.nextLine();
 
+                    Long requesterId = AuthenticationService.getInstance().getLoginUser().getId();
+
                     Scholarship scholarship = new Scholarship(null, "RequestedByStudent", name, family, nationalCode
-                            , lastUni, lastDegree, lastField, lastScore, applyUni, applyDegree, applyField, applyDate);
+                            , lastUni, lastDegree, lastField, lastScore, applyUni, applyDegree, applyField, applyDate, requesterId);
 
                     new RequestScholarshipByStudentUseCaseImpl().request(scholarship);
                     System.out.println("\t\t\u2705 Request Sent Successfully!");

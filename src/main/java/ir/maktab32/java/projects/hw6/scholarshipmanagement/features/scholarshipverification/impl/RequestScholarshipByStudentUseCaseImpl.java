@@ -23,8 +23,8 @@ public class RequestScholarshipByStudentUseCaseImpl implements RequestScholarshi
                 Connection connection = DatabaseConfig.getDatabaseConnection();
                 String sql = "insert into " +
                         "scholarship(status, name, family, nationalCode, lastUni, lastDegree, lastField" +
-                        ", lastScore, applyUni, applyDegree, applyField, applyDate) " +
-                        "values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                        ", lastScore, applyUni, applyDegree, applyField, applyDate, requesterId) " +
+                        "values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.setString(1, "RequestedByStudent");
                 preparedStatement.setString(2, scholarship.getName());
@@ -38,6 +38,7 @@ public class RequestScholarshipByStudentUseCaseImpl implements RequestScholarshi
                 preparedStatement.setString(10, scholarship.getApplyDegree());
                 preparedStatement.setString(11, scholarship.getApplyField());
                 preparedStatement.setString(12, scholarship.getApplyDate());
+                preparedStatement.setLong(13, scholarship.getRequesterId());
                 preparedStatement.execute();
 
                 List<Scholarship> allScholarships = new FindAllScholarshipsByApplicationUseCaseImpl().listAllScholarships();

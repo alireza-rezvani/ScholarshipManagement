@@ -35,7 +35,8 @@ public class FindAllScholarshipsByApplicationUseCaseImpl implements FindAllSchol
                         resultSet.getString("applyUni"),
                         resultSet.getString("applyDegree"),
                         resultSet.getString("applyField"),
-                        resultSet.getString("applyField")
+                        resultSet.getString("applyField"),
+                        resultSet.getLong("requesterId")
                 );
                 result.add(scholarship);
             }

@@ -39,7 +39,8 @@ public class FindScholarshipByStudentUseCaseImpl implements FindScholarshipByStu
                             resultSet.getString("applyUni"),
                             resultSet.getString("applyDegree"),
                             resultSet.getString("applyField"),
-                            resultSet.getString("applyDate")
+                            resultSet.getString("applyDate"),
+                            resultSet.getLong("requesterId")
                     );
 
                     result.add(scholarship);
