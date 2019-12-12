@@ -291,20 +291,25 @@ public class ScholarshipManagementApplication {
 
             //***************************display given scholarship's logs************************
             else if (command.equals("history")){
-                System.out.print("\t\u29bf Scholarship Id: ");
-                String scholarshipId = scanner.nextLine();
-
-                if (!MyMath.isLong(scholarshipId)) {
-                    System.out.println("\t\t\u26a0 Invalid Scholarship Id!");
-                }
+                User user = AuthenticationService.getInstance().getLoginUser();
+                if (user == null)
+                    System.out.println("\t\u26a0 Please Login!");
                 else {
-                    FindScholarshipHistoryUseCase findScholarshipHistoryUseCase
-                            = new FindScholarshipHistoryUseCaseImpl();
-                    List<ScholarshipLog> logs = findScholarshipHistoryUseCase.listLogs(Long.parseLong(scholarshipId));
-                    if (logs.size() == 0)
-                        System.out.println("\t\t\u26a0 No Logs Found! Make Sure that Entered Scholarship Id is Valid!");
-                    else
-                        DisplayData.printLogsList(logs, Long.parseLong(scholarshipId));
+                    System.out.print("\t\u29bf Scholarship Id: ");
+                    String scholarshipId = scanner.nextLine();
+
+                    if (!MyMath.isLong(scholarshipId)) {
+                        System.out.println("\t\t\u26a0 Invalid Scholarship Id!");
+                    }
+                    else {
+                        FindScholarshipHistoryUseCase findScholarshipHistoryUseCase
+                                = new FindScholarshipHistoryUseCaseImpl();
+                        List<ScholarshipLog> logs = findScholarshipHistoryUseCase.listLogs(Long.parseLong(scholarshipId));
+                        if (logs.size() == 0)
+                            System.out.println("\t\t\u26a0 No Logs Found! Make Sure that Entered Scholarship Id is Valid!");
+                        else
+                            DisplayData.printLogsList(logs, Long.parseLong(scholarshipId));
+                    }
                 }
             }
 
